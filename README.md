@@ -49,6 +49,7 @@ Connecting to http://cs.stanford.edu/people/alecmgo/
 Retriving file : trainingandtestdata.zip
 Download progress :     99%Download done ...
 Unzipping file ...
+
 Done unzipping twitterdata.zip
 Connecting to Mongodb using connectionstring : mongodb://172.17.0.1:27017
 Using database name : TwitterTextDb
