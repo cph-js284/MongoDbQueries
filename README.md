@@ -19,7 +19,7 @@ A timer is run at the start of each query and printed to the console along with 
 
 2) Create a new folder and clone the repo to this newly created folder
 
-3) Put the following line into your terminal : *$sudo docker inspect bridge | grep "Gateway" > gateway.txt
+3) Put the following line into your terminal : *$sudo docker inspect bridge | grep "Gateway" > gateway.txt*
   - This will put the docker brigde inet-adr into a file called gateway.txt, the program uses this to connect to the container running      Mongo.
 
 4) Start up a Docker container running MongoDb by typing: *$sudo docker run -d --rm -p=27017:27017 --name dbms mongo
