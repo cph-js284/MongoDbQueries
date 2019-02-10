@@ -17,7 +17,7 @@ A timer is run at the start of each query and printed to the console along with 
 # How to make it work
 1) Vagrant ssh into your Ubuntu
 
-2) Create a new folder and clone the repo to this newly created folder
+2) Clone the repo and move into the folder this creates (MongnDbQueries)
 
 3) Put the following line into your terminal : *$sudo docker inspect bridge | grep "Gateway" > gateway.txt*
   - This will put the docker brigde inet-adr into a file called gateway.txt, the program uses this to connect to the container running      Mongo.
