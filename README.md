@@ -37,7 +37,7 @@ A timer is run at the start of each query and printed to the console along with 
 
 - Both of the Docker containers are started the with --rm flag meaning they will automaticly be deleted once they are stopped
 
-- The timing results that you see in the programOutput.txt file may vary depending on your rig (on my 3 year old laptop the execution takes about twice as long)
+- The timing results that you see in the programOutput.txt file may vary depending on your rig (on my 3 year old laptop the execution of each query take about 25 secs)
 
 - This has happened to me once, but since the download method is run asyncromously the decompresser might fail with the follwing error:
 *System.IO.InvalidDataException: End of Central Directory record could not be found.*
