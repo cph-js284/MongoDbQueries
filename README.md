@@ -25,6 +25,7 @@ A timer is run at the start of each query and printed to the console along with 
 4) Start up a Docker container running MongoDb by typing: *$sudo docker run -d --rm -p=27017:27017 --name dbms mongo*
 
 5) Build a Docker container that will run the console program by typing: *$sudo docker build -t justaname .*
+*(Including the "." in the end)*
   - You can call the container whatever you want, remember to use the same name when starting the container
   - This will fetch all dependencies and build the .dll file
  
