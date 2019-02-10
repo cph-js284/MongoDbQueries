@@ -14,6 +14,7 @@ namespace mongoTwitter1
         string Zipfile, CSVfile, DBname, CollectionName,host,port,ConnectionString;
         MongoClient client;
         IMongoDatabase mdb;
+        IMongoCollection<TwitterData> collection;
         Qs queries;
 
         public SettingUp()
@@ -31,7 +32,8 @@ namespace mongoTwitter1
             ConnectionString = "mongodb://"+host+port;
             client = new MongoClient(ConnectionString);
             mdb = client.GetDatabase(DBname);
-            queries = new Qs();
+            collection = mdb.GetCollection<TwitterData>(CollectionName);
+            queries = new Qs(collection);
         }
 
         /*Downloading the zip from Stanford */
@@ -81,17 +83,21 @@ namespace mongoTwitter1
             }
             return twitterData;
         }
-        /*Read docker inet-adr from gateway.txt*/
+        /*Read docker0 inet-adr from gateway.txt*/
         public string DetectDockerBridgeGateWay(){
             using (FileStream fs = new FileStream("gateway.txt", FileMode.Open, FileAccess.Read)){
                 using (StreamReader sr = new StreamReader(fs)){
-                    var res = sr.ReadLine().Split(':');
+
+                    var lineIn = sr.ReadLine();
+                    var res =lineIn.Split(':');
                     if (res[1]!=null){
-                        var tmp = res[1].Replace("\"","").Replace(" ", "");
-                        return tmp;
+                        var tmpres = res[1].Split(" ");
+                        var inetAdr = tmpres[0].Replace("\"","").Replace(" ", "");
+                        return inetAdr;
                     }else{
                         throw new Exception("Failed to detect docker network bridgeinet adr");
                     }
+
                 }
             }
         }
@@ -106,7 +112,6 @@ namespace mongoTwitter1
                     System.Console.WriteLine($"Using collection name : {CollectionName}");
 
                     mdb.DropCollection(CollectionName);
-                    var collection = mdb.GetCollection<TwitterData>(CollectionName);
                     int InsertCounter = 0;
 
                     System.Console.WriteLine("Building documents...");
@@ -133,7 +138,6 @@ namespace mongoTwitter1
         /*Build indexes on UserName field */
         public void BuildIndex(){
             System.Console.WriteLine("Building indexes - standby");
-            var collection = mdb.GetCollection<TwitterData>(CollectionName);
             var indexBuilder = Builders<TwitterData>.IndexKeys;
             var indexmodel = new CreateIndexModel<TwitterData>(indexBuilder.Ascending(x=>x.UserName));
             collection.Indexes.CreateOne(indexmodel);

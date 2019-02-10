@@ -9,27 +9,22 @@ namespace MongoDbQueries
 {
     public class Qs
     {
-        string DBname, CollectionName,ConnectionString;
         Stopwatch stopwatch;
-        MongoClient client;
-        IMongoDatabase mdb;
+        IMongoCollection<TwitterData> _collection;
 
-        public Qs()
+        public Qs(IMongoCollection<TwitterData> coll)
         {
-            DBname = "TwitterTextDb";
-            CollectionName ="TweetDocs";       
             stopwatch = new Stopwatch();
-            client = new MongoClient(ConnectionString);
-            mdb = client.GetDatabase(DBname);
+            _collection = coll;
         }
 
                 /*Question 1  */
         public void CalculateUniqueUN(){
             System.Console.WriteLine("Question 1) How many Twitter users are in the database?");
             System.Console.WriteLine("Calculating unique number of usernames in Db - standby");
-            var collection = mdb.GetCollection<TwitterData>(CollectionName);
+            //var collection = mdb.GetCollection<TwitterData>(CollectionName);
 
-            var UserNameCounter = collection.Distinct(x => x.UserName, _=> true).ToList().Count();
+            var UserNameCounter = _collection.Distinct(x => x.UserName, _=> true).ToList().Count();
 
             System.Console.WriteLine($"Number of unique username found in Db : {UserNameCounter}");
             System.Console.WriteLine();
@@ -39,9 +34,9 @@ namespace MongoDbQueries
         public void CalculateUserLinkToOther(){
             System.Console.WriteLine("Question 2) Which Twitter users link the most to other Twitter users? (Provide the top ten.)");            
             System.Console.WriteLine("Calculating linking between users - standby");
-            var collection = mdb.GetCollection<TwitterData>(CollectionName);
+            //var collection = mdb.GetCollection<TwitterData>(CollectionName);
 
-            var res = collection.AsQueryable()
+            var res = _collection.AsQueryable()
                     .Where(x => x.Text.Contains("@"))
                     .GroupBy(u => u.UserName)
                     .Select(usr => new{UserName = usr.Key, TweetCount = usr.Count()})
@@ -61,8 +56,8 @@ namespace MongoDbQueries
             System.Console.WriteLine("Calculating most mentioned users - standby");
             Dictionary<string, int> store = new Dictionary<string, int>();
 
-            var collection = mdb.GetCollection<TwitterData>(CollectionName);
-            var res = collection.AsQueryable().Where(x=>x.Text.Contains("@")).ToList();
+            //var collection = mdb.GetCollection<TwitterData>(CollectionName);
+            var res = _collection.AsQueryable().Where(x=>x.Text.Contains("@")).ToList();
             
             Regex regex = new Regex(@"@[\w]+");
 
@@ -91,9 +86,9 @@ namespace MongoDbQueries
         public void CalculateMostActive(){
             System.Console.WriteLine("Question 4) Who are the most active Twitter users (top ten)?");
             System.Console.WriteLine("Calculating most active twitter users - standby");
-            var collection = mdb.GetCollection<TwitterData>(CollectionName);
+            //var collection = mdb.GetCollection<TwitterData>(CollectionName);
 
-            var res = collection.AsQueryable()
+            var res = _collection.AsQueryable()
                     .GroupBy(u => u.UserName)
                     .Select(usr => new{UserName = usr.Key, TweetCount = usr.Count()})
                     .OrderByDescending(c => c.TweetCount)
@@ -110,10 +105,10 @@ namespace MongoDbQueries
             System.Console.WriteLine("Question 5) Who are the five most grumpy (most negative tweets) and the most happy (most positive tweets)?");
             System.Console.WriteLine("Calculating most grumpy twitter users - standby");
 
-            var collection = mdb.GetCollection<TwitterData>(CollectionName);
+            //var collection = mdb.GetCollection<TwitterData>(CollectionName);
             var args = new AggregateOptions(){AllowDiskUse=true};
             
-            var Full = collection.Aggregate(args)
+            var Full = _collection.Aggregate(args)
                     .Group(u=>u.UserName, grp=> new{
                         UserName = grp.Key,
                         PolScore = grp.Sum(y=>y.Polarity)
