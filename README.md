@@ -1,5 +1,5 @@
 # MongoDbQueries
-Turn-in exercise2 in PB database soft2019spring
+Turn-in assignment 2 in PB database soft2019spring
 
 # What is it?
 This is C# console program that runs in a docker container
